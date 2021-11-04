@@ -61,8 +61,8 @@ void Unload(IN PDRIVER_OBJECT DriverObject)
 
 	if (fnNtTerminateProcess != NULL) {
 		DisableWP();
-		// TODO: Use InterlockedExchange
-		*(PULONG)SSDTAddress = (ULONG)fnNtTerminateProcess;
+		// Revert the original function address
+		InterlockedExchangePointer((PVOID)SSDTAddress, (PVOID)fnNtTerminateProcess);
 		EnableWP();
 		DbgPrint("The original SSDT function has been restored\n");
 	}
@@ -85,8 +85,7 @@ NTSTATUS DriverEntry(PDRIVER_OBJECT DriverObject, PUNICODE_STRING RegistryPath)
 	// Save the address of an original function
 	fnNtTerminateProcess = (pNtTerminateProcess)OrigNtTerminateProcess;
 	// Swap the original address with the hooked function address
-	// TODO: Use InterlockedExchange
-	*(PULONG)SSDTAddress = (ULONG)HookNtTerminateProcess;
+	InterlockedExchangePointer((PVOID)SSDTAddress, (PVOID)HookNtTerminateProcess);
 
 	EnableWP();
 	DbgPrint("End of DriverEntry!\n");
