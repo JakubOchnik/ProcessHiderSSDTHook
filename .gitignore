@@ -1,0 +1,10 @@
+x64/
+.vs/
+Debug/
+runsdvui.cmd
+*.inf
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.filters.user
+*.vcxproj.user
