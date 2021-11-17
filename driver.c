@@ -83,13 +83,10 @@ NTSTATUS DriverEntry(PDRIVER_OBJECT DriverObject, PUNICODE_STRING RegistryPath)
 	DriverObject->DriverUnload = Unload;
 
 	// Get the INDEX of the service in SSDT table using a simple hack
-	// When Windows calls the system routine (sysenter instruction), the system call number is
-	// stored in the EAX register. In our case it's just the ZwTerminateProcess.
-	// Lower 12 bits - index in SSDT, 13th bit - SDT (KeServiceDescriptorTable [0x0-0xFFF numbers] or ...Shadow [0x1000 - 0x1FFF])
 	const ULONG RoutineIndex = GetServiceNumber(ZwTerminateProcess);
 	DisableWP();
 
-	// Calculate the address of address of the routine held in SSDT :)
+	// Calculate the address of address of the routine held in SSDT
 	// addr = KeServiceTableAddress + routine_index * 4 (bytes, address length)
 	SSDTAddress = (ULONG)KeServiceDescriptorTable->ServiceTableBase + RoutineIndex * 4;
 	// Get the absolute address of original routine
