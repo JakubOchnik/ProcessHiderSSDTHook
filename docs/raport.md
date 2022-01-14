@@ -1,8 +1,9 @@
 # Sprawozdanie  - SSDT Hook (ukrywanie procesu)
 
 ## 1. Wprowadzenie
-W ramach projektu z przedmiotu Oprogramowanie Systemowe stworzono sterownik WDM (Windows Driver Model), który ma na celu "hooking" (podpięcie się) pod usługę systemową *NtQuerySystemInformation* w celu ukrycia zdefiniowanego procesu o wcześniej podanej nazwie.
+W ramach projektu z przedmiotu Oprogramowanie Systemowe stworzono sterownik WDM (Windows Driver Model), który ma na celu "hooking" (podpięcie się) pod usługę systemową *NtQuerySystemInformation* w celu ukrycia zdefiniowanego procesu o wcześniej podanej nazwie. 
 
+Sprawozdanie zostało podzielone na krótkie wprowadzenie teoretyczne oraz tutorial wykonania SSDT Hook'a.
 ## 2. Podstawy teoretyczne
 ![hook architecture](img/da4c7d9f76f3d42468f1ef5ee0e2427d6cb7d6ca850ccfaf10ac83d7e042c072.png)  
 *Uproszczony schemat wywoływania funkcji systemowej z tablicy SSDT*
@@ -28,7 +29,7 @@ Funkcją, którą wybrano do podmiany jest ZwQuerySystemInformation. Dostarcza o
 
 ## 3. Założenia i ograniczenia
 W 64-bitowych wersjach systemów Windows ntoskrnl.exe nie udostępnia (eksportuje) 64-bitowej tablicy SSDT (KeServiceDescriptorTable), co sprawia, że dostęp do niej jest znacznie utrudniony. Ponadto wprowadzono mechanizm PatchGuard, który dodatkowo chroni system przed możliwością nadpisywania stron systemowych przez ustawienie bitu WP. Z tych powodów zdecydowano się na wykonanie projektu zgodnego z 32-bitową wersją systemu Windows 7.
-## 4. Opis działań
+## 4. Tutorial
 Pierwszą rzeczą, którą należy wykonać jest dołączenie do funkcji sterownika nagłówka z przydatnymi funkcjami systemu Windows.
 ```c
 #include <wddk.h>
